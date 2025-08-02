@@ -21,12 +21,7 @@ open class ElegantEmojiPicker: UIViewController {
     
     let backgroundBlur = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
     
-    var searchFieldBackground: UIVisualEffectView?
-    var searchField: UITextField?
-    var clearButton: UIButton?
-    var randomButton: UIButton?
-    var resetButton: UIButton?
-    var closeButton: UIButton?
+    var searchController: UISearchController?
     
     let fadeContainer = UIView()
     let collectionLayout: UICollectionViewFlowLayout = {
@@ -54,6 +49,20 @@ open class ElegantEmojiPicker: UIViewController {
     
     var isSearching: Bool = false
     var overridingFocusedSection: Bool = false
+    
+    
+    /// Create a navigation controller containing the emoji picker with cancel button
+    /// - Parameters:
+    ///   - delegate: provide a delegate to interact with the picker
+    ///   - configuration: provide a configuration to change UI and behavior
+    ///   - localization: provide a localization to change texts on all labels
+    ///   - sourceView: provide a source view for a popover presentation style.
+    ///   - sourceNavigationBarButton: provide a source navigation bar button for a popover presentation style.
+    /// - Returns: UINavigationController ready to present
+    public static func createNavigationController(delegate: ElegantEmojiPickerDelegate? = nil, configuration: ElegantConfiguration = ElegantConfiguration(), localization: ElegantLocalization = ElegantLocalization(), sourceView: UIView? = nil, sourceNavigationBarButton: UIBarButtonItem? = nil) -> UINavigationController {
+        let picker = ElegantEmojiPicker(delegate: delegate, configuration: configuration, localization: localization, sourceView: sourceView, sourceNavigationBarButton: sourceNavigationBarButton)
+        return UINavigationController(rootViewController: picker)
+    }
     
     /// Initialize and present this view controller to offer emoji selection to users.
     /// - Parameters:
@@ -84,75 +93,34 @@ open class ElegantEmojiPicker: UIViewController {
             }
         }
         
+        // Set up navigation bar with cancel button
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelTapped))
+        
+        // Set initial navigation title to first section
+        if !emojiSections.isEmpty {
+            self.navigationItem.title = emojiSections[0].title
+        }
+        
         self.presentationController?.delegate = self
         
         self.view.addSubview(backgroundBlur, anchors: LayoutAnchor.fullFrame)
         
         if config.showSearch {
-            searchFieldBackground = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
-            searchFieldBackground!.layer.cornerRadius = 8
-            searchFieldBackground!.clipsToBounds = true
-            searchFieldBackground!.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TappedSearchBackground)))
-            self.view.addSubview(searchFieldBackground!, anchors: [.safeAreaLeading(padding), .safeAreaTop(padding*1.5), .height(topElementHeight)])
+            searchController = UISearchController(searchResultsController: nil)
+            searchController!.searchResultsUpdater = self
+            searchController!.delegate = self
+            searchController!.obscuresBackgroundDuringPresentation = false
+            searchController!.searchBar.placeholder = localization.searchFieldPlaceholder
+            searchController!.hidesNavigationBarDuringPresentation = false
             
-            let spacing = 10.0
-            
-            clearButton = UIButton()
-            clearButton!.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
-            clearButton!.tintColor = .systemGray
-            clearButton!.alpha = 0
-            clearButton!.contentMode = .scaleAspectFit
-            clearButton!.setContentHuggingPriority(.required, for: .horizontal)
-            clearButton!.setContentCompressionResistancePriority(.required, for: .horizontal)
-            clearButton!.addTarget(self, action: #selector(ClearButtonTap), for: .touchUpInside)
-            searchFieldBackground?.contentView.addSubview(clearButton!, anchors: [.trailing(spacing), .top(spacing), .bottom(spacing)])
-            
-            searchField = UITextField()
-            searchField!.placeholder = localization.searchFieldPlaceholder
-            searchField!.delegate = self
-            searchField!.addTarget(self, action: #selector(searchFieldChanged), for: .editingChanged)
-            searchFieldBackground!.contentView.addSubview(searchField!, anchors: [.leading(spacing), .top(spacing), .bottom(spacing), .trailingToLeading(clearButton!, spacing)])
+            self.navigationItem.searchController = searchController
+            self.navigationItem.hidesSearchBarWhenScrolling = false
+            self.definesPresentationContext = true
         }
         
-        if config.showRandom {
-            randomButton = UIButton()
-            randomButton!.setTitle(localization.randomButtonTitle, for: .normal)
-            randomButton!.setTitleColor(.label, for: .normal)
-            randomButton!.setTitleColor(.systemGray, for: .highlighted)
-            randomButton!.addTarget(self, action: #selector(TappedRandom), for: .touchUpInside)
-            randomButton!.contentHorizontalAlignment = .trailing
-            randomButton!.setContentHuggingPriority(.required, for: .horizontal)
-            randomButton!.setContentCompressionResistancePriority(.required, for: .horizontal)
-            self.view.addSubview(randomButton!, anchors: [.safeAreaTop(padding*1.5), .height(topElementHeight)])
-            randomButton?.leadingAnchor.constraint(equalTo: searchFieldBackground?.trailingAnchor ?? self.view.safeAreaLayoutGuide.leadingAnchor, constant: padding).isActive = true
-        }
         
-        if config.showReset {
-            resetButton = UIButton()
-            resetButton!.setImage(UIImage(systemName: "clear"), for: .normal)
-            resetButton!.tintColor = .systemRed
-            resetButton!.addTarget(self, action: #selector(TappedReset), for: .touchUpInside)
-            resetButton?.contentHorizontalAlignment = .trailing
-            resetButton?.setContentHuggingPriority(.required, for: .horizontal)
-            resetButton?.setContentCompressionResistancePriority(.required, for: .horizontal)
-            self.view.addSubview(resetButton!, anchors: [.safeAreaTop(padding*1.5), .height(topElementHeight)])
-            resetButton?.leadingAnchor.constraint(equalTo: randomButton?.trailingAnchor ?? searchFieldBackground?.trailingAnchor ?? self.view.safeAreaLayoutGuide.leadingAnchor, constant: padding).isActive = true
-        }
         
-        if config.showClose {
-            closeButton = UIButton()
-            closeButton!.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-            closeButton!.addTarget(self, action: #selector(TappedClose), for: .touchUpInside)
-            closeButton!.setContentHuggingPriority(.required, for: .horizontal)
-            closeButton!.contentHorizontalAlignment = .trailing
-            closeButton!.setContentCompressionResistancePriority(.required, for: .horizontal)
-            self.view.addSubview(closeButton!, anchors: [.safeAreaTop(padding*1.5), .height(topElementHeight)])
-            closeButton?.leadingAnchor.constraint(equalTo: resetButton?.trailingAnchor ?? randomButton?.trailingAnchor ?? searchFieldBackground?.trailingAnchor ?? self.view.safeAreaLayoutGuide.leadingAnchor, constant: padding).isActive = true
-        }
         
-        if let rightMostItem = closeButton ?? resetButton ?? randomButton ?? searchFieldBackground {
-            rightMostItem.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -padding).isActive = true
-        }
         
         let gradient = CAGradientLayer()
         gradient.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
@@ -160,7 +128,7 @@ open class ElegantEmojiPicker: UIViewController {
         gradient.endPoint = CGPoint(x: 0.5, y: 0.05)
         fadeContainer.layer.mask = gradient
         self.view.addSubview(fadeContainer, anchors: [.safeAreaLeading(0), .safeAreaTrailing(0), .bottom(0)])
-        fadeContainer.topAnchor.constraint(equalTo: closeButton?.bottomAnchor ?? resetButton?.bottomAnchor ?? randomButton?.bottomAnchor ?? searchFieldBackground?.bottomAnchor ?? self.view.safeAreaLayoutGuide.topAnchor).isActive = true
+        fadeContainer.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor).isActive = true
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionLayout)
         collectionView.backgroundColor = .clear
@@ -201,17 +169,8 @@ open class ElegantEmojiPicker: UIViewController {
         self.view.backgroundColor = UIScreen.main.traitCollection.userInterfaceStyle == .light ? .black.withAlphaComponent(0.1) : .clear
     }
     
-    @objc func TappedClose () {
+    @objc func cancelTapped() {
         self.dismiss(animated: true)
-    }
-    
-    @objc func TappedRandom () {
-        let randomEmoji = emojiSections.randomElement()?.emojis.randomElement()
-        didSelectEmoji(randomEmoji)
-    }
-    
-    @objc func TappedReset () {
-        didSelectEmoji(nil)
     }
     
     func didSelectEmoji (_ emoji: Emoji?) {
@@ -225,6 +184,11 @@ open class ElegantEmojiPicker: UIViewController {
 extension ElegantEmojiPicker {
     func didSelectSection(_ index: Int) {
         collectionView.scrollToItem(at: IndexPath(row: 0, section: index), at: .centeredVertically, animated: true)
+        
+        // Update navigation title immediately when section is selected
+        if index < emojiSections.count {
+            self.navigationItem.title = emojiSections[index].title
+        }
         
         overridingFocusedSection = true
         self.focusedSection = index
@@ -253,15 +217,11 @@ extension ElegantEmojiPicker {
 
 // MARK: Search
 
-extension ElegantEmojiPicker: UITextFieldDelegate {
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    @objc func searchFieldChanged (_ textField: UITextField) {
-        let count = textField.text!.count
-        let searchTerm = textField.text!
+extension ElegantEmojiPicker: UISearchResultsUpdating, UISearchControllerDelegate {
+    public func updateSearchResults(for searchController: UISearchController) {
+        let searchTerm = searchController.searchBar.text ?? ""
+        let count = searchTerm.count
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self = self else { return }
             
@@ -279,27 +239,37 @@ extension ElegantEmojiPicker: UITextFieldDelegate {
         
         if !isSearching && count > 0 {
             isSearching = true
-            clearButton?.alpha = 0.5 // Doing this to keep translucency
+            self.navigationItem.title = localization.searchResultsTitle
             delegate?.emojiPickerDidStartSearching(self)
             HideBuiltInToolbar()
         }
         else if isSearching && count == 0 {
             isSearching = false
-            clearButton?.alpha = 0
+            // Restore navigation title to current section
+            if focusedSection < emojiSections.count {
+                self.navigationItem.title = emojiSections[focusedSection].title
+            }
             delegate?.emojiPickerDidEndSearching(self)
             ShowBuiltInToolbar()
         }
     }
     
-    @objc func ClearButtonTap () {
-        if let searchField = searchField {
-            searchField.text = ""
-            searchFieldChanged(searchField)
+    public func willPresentSearchController(_ searchController: UISearchController) {
+        if !isSearching {
+            self.navigationItem.title = localization.searchResultsTitle
         }
+        delegate?.emojiPickerDidStartSearching(self)
     }
     
-    @objc func TappedSearchBackground () {
-        searchField?.becomeFirstResponder()
+    public func willDismissSearchController(_ searchController: UISearchController) {
+        if isSearching {
+            isSearching = false
+            // Restore navigation title to current section
+            if focusedSection < emojiSections.count {
+                self.navigationItem.title = emojiSections[focusedSection].title
+            }
+        }
+        delegate?.emojiPickerDidEndSearching(self)
     }
 }
 
@@ -347,7 +317,7 @@ extension ElegantEmojiPicker: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y > 10 { searchField?.resignFirstResponder() }
+        if scrollView.contentOffset.y > 10 { searchController?.searchBar.resignFirstResponder() }
         
         DetectCurrentSection()
         HideSkinToneSelector()
@@ -470,6 +440,11 @@ extension ElegantEmojiPicker {
                 
                 self.focusedSection = mostVisibleSection
                 if self.prevFocusedSection != self.focusedSection {
+                    // Update navigation title to current section
+                    if self.focusedSection < self.emojiSections.count {
+                        self.navigationItem.title = self.emojiSections[self.focusedSection].title
+                    }
+                    
                     self.delegate?.emojiPicker(self, focusedSectionChanged: self.focusedSection, from: self.prevFocusedSection)
                     self.toolbar?.UpdateCorrectSelection()
                 }

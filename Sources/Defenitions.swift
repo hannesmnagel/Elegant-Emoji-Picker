@@ -201,9 +201,9 @@ public struct ElegantConfiguration {
     ///   - defaultSkinTone: Optional skin tone to use as default. Default value is `nil`, meaning standard yellow emojis will be used.
     public init(
         showSearch: Bool = true,
-        showRandom: Bool = true,
-        showReset: Bool = true,
-        showClose: Bool = true,
+        showRandom: Bool = false,
+        showReset: Bool = false,
+        showClose: Bool = false,
         showToolbar: Bool = true,
         supportsPreview: Bool = true,
         categories: [EmojiCategory] = [.SmileysAndEmotion, .PeopleAndBody, .AnimalsAndNature, .FoodAndDrink, .TravelAndPlaces, .Activities, .Objects, .Symbols, .Flags],
