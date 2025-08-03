@@ -25,12 +25,11 @@ open class ElegantEmojiPicker: UINavigationController {
     /// Initialize and present this view controller to offer emoji selection to users.
     /// - Parameters:
     ///   - delegate: provide a delegate to interact with the picker
-    ///   - localization: provide a localization to change texts on all labels
     ///   - sourceView: provide a source view for a popover presentation style.
     ///   - sourceNavigationBarButton: provide a source navigation bar button for a popover presentation style.
-    public init(delegate: ElegantEmojiPickerDelegate? = nil, localization: ElegantLocalization = ElegantLocalization(), sourceView: UIView? = nil, sourceNavigationBarButton: UIBarButtonItem? = nil) {
+    public init(delegate: ElegantEmojiPickerDelegate? = nil, sourceView: UIView? = nil, sourceNavigationBarButton: UIBarButtonItem? = nil) {
         
-        self.pickerViewController = ElegantEmojiPickerViewController(delegate: delegate, localization: localization)
+        self.pickerViewController = ElegantEmojiPickerViewController(delegate: delegate)
         
         super.init(rootViewController: pickerViewController)
         
@@ -103,10 +102,8 @@ extension ElegantEmojiPicker {
     }
     
     /// Returns an array of all available emojis categorized by section.
-    /// - Parameters:
-    ///   - localization: Localization used to setup the emoji picker.
     /// - Returns: Array of default sections [EmojiSection] containing all available emojis.
-    static public func getDefaultEmojiSections(localization: ElegantLocalization = ElegantLocalization()) -> [EmojiSection]  {
+    static public func getDefaultEmojiSections() -> [EmojiSection]  {
         var emojis = getAllEmoji()
         
         let persistedSkinTones = ElegantEmojiPicker.persistedSkinTones
@@ -128,7 +125,7 @@ extension ElegantEmojiPicker {
         for emoji in emojis {
             if emoji.iOSVersion.compare(currentIOSVersion, options: .numeric) == .orderedDescending { continue } // Skip unsupported emojis.
             
-            let localizedCategoryTitle = localization.emojiCategoryTitles[emoji.category] ?? emoji.category.rawValue
+            let localizedCategoryTitle = EmojiPickerLocalization.categoryTitle(for: emoji.category)
             
             if let section = emojiSections.firstIndex(where: { $0.title == localizedCategoryTitle }) {
                 emojiSections[section].emojis.append(emoji)

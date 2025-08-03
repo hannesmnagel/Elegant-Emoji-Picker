@@ -1,0 +1,17 @@
+/* Elegant Emoji Picker Localizable Strings - German */
+
+/* Search */
+"search_placeholder" = "Suchen";
+"search_results_title" = "Suchergebnisse";
+"search_results_empty" = "Keine Emojis gefunden";
+
+/* Emoji Categories */
+"category_smileys_emotion" = "Smileys & Emotionen";
+"category_people_body" = "Menschen & Körper";
+"category_animals_nature" = "Tiere & Natur";
+"category_food_drink" = "Essen & Trinken";
+"category_travel_places" = "Reisen & Orte";
+"category_activities" = "Aktivitäten";
+"category_objects" = "Objekte";
+"category_symbols" = "Symbole";
+"category_flags" = "Flaggen";

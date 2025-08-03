@@ -172,35 +172,3 @@ public enum EmojiCategory: String, CaseIterable, Decodable {
 }
 
 
-/// Struct storing texts for all labels of ElegantEmojiPicker
-public struct ElegantLocalization {
-    public var searchFieldPlaceholder: String
-    
-    public var searchResultsTitle: String
-    public var searchResultsEmptyTitle: String
-    
-    public var randomButtonTitle: String
-    
-    public var emojiCategoryTitles: [EmojiCategory:String]
-    
-    /// Create new localization object
-    /// - Parameters:
-    ///   - searchFieldPlaceholder: Placeholder text for the search bar
-    ///   - searchResultsTitle: Title text shown when presenting users with emoji search results
-    ///   - searchResultsEmptyTitle: Title text shown when search results are empty
-    ///   - randomButtonTitle: Title for the button that selects a random emoji
-    ///   - emojiCategoryTitles: Dictionary of titles for default emoji categories, like "Smileys & Emotion", "People & Body", and so on.
-    public init(
-        searchFieldPlaceholder: String = "Search",
-        searchResultsTitle: String = "Search results",
-        searchResultsEmptyTitle: String = "No emoji found",
-        randomButtonTitle: String = "Random",
-        emojiCategoryTitles: [EmojiCategory : String] = EmojiCategory.allCases.reduce(into: [EmojiCategory:String](), { $0[$1] = $1.rawValue })) {
-            
-        self.searchFieldPlaceholder = searchFieldPlaceholder
-        self.searchResultsTitle = searchResultsTitle
-        self.searchResultsEmptyTitle = searchResultsEmptyTitle
-        self.randomButtonTitle = randomButtonTitle
-        self.emojiCategoryTitles = emojiCategoryTitles
-    }
-}

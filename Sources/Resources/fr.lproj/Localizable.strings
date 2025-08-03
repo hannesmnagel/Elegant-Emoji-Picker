@@ -1,0 +1,17 @@
+/* Elegant Emoji Picker Localizable Strings - French */
+
+/* Search */
+"search_placeholder" = "Rechercher";
+"search_results_title" = "Résultats de recherche";
+"search_results_empty" = "Aucun emoji trouvé";
+
+/* Emoji Categories */
+"category_smileys_emotion" = "Smileys & Émotions";
+"category_people_body" = "Personnes & Corps";
+"category_animals_nature" = "Animaux & Nature";
+"category_food_drink" = "Nourriture & Boissons";
+"category_travel_places" = "Voyages & Lieux";
+"category_activities" = "Activités";
+"category_objects" = "Objets";
+"category_symbols" = "Symboles";
+"category_flags" = "Drapeaux";

@@ -1,0 +1,17 @@
+/* Elegant Emoji Picker Localizable Strings - Spanish */
+
+/* Search */
+"search_placeholder" = "Buscar";
+"search_results_title" = "Resultados de búsqueda";
+"search_results_empty" = "No se encontraron emojis";
+
+/* Emoji Categories */
+"category_smileys_emotion" = "Caritas & Emociones";
+"category_people_body" = "Personas & Cuerpo";
+"category_animals_nature" = "Animales & Naturaleza";
+"category_food_drink" = "Comida & Bebidas";
+"category_travel_places" = "Viajes & Lugares";
+"category_activities" = "Actividades";
+"category_objects" = "Objetos";
+"category_symbols" = "Símbolos";
+"category_flags" = "Banderas";

@@ -89,7 +89,7 @@ The library uses a comprehensive delegate pattern with optional methods:
 
 ### Simplified Architecture
 - No configuration complexity - sensible defaults with search, categories, and skin tones enabled
-- `ElegantLocalization`: Provides custom text for all UI labels
+- Native iOS localization using Localizable.strings files for 5 languages (EN, DE, FR, ES, IT)
 - Emoji sections can be completely customized through delegate methods
 - Navigation controller automatically handles cancel button and search bar
 

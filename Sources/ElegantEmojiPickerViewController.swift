@@ -12,7 +12,6 @@ import UIKit
 internal class ElegantEmojiPickerViewController: UIViewController {
     
     public weak var delegate: ElegantEmojiPickerDelegate?
-    public let localization: ElegantLocalization
     
     let padding = 16.0
     let topElementHeight = 40.0
@@ -51,15 +50,13 @@ internal class ElegantEmojiPickerViewController: UIViewController {
     /// Initialize the internal picker view controller
     /// - Parameters:
     ///   - delegate: provide a delegate to interact with the picker
-    ///   - localization: provide a localization to change texts on all labels
-    init(delegate: ElegantEmojiPickerDelegate? = nil, localization: ElegantLocalization = ElegantLocalization()) {
+    init(delegate: ElegantEmojiPickerDelegate? = nil) {
         self.delegate = delegate
-        self.localization = localization
         super.init(nibName: nil, bundle: nil)
     }
     
     func setupEmojiSections() {
-        self.emojiSections = self.delegate?.emojiPicker(ElegantEmojiPicker.shared, loadEmojiSections: localization) ?? ElegantEmojiPicker.getDefaultEmojiSections(localization: localization)
+        self.emojiSections = self.delegate?.emojiPicker(ElegantEmojiPicker.shared, loadEmojiSections: ()) ?? ElegantEmojiPicker.getDefaultEmojiSections()
         
         setupUI()
     }
@@ -80,7 +77,7 @@ internal class ElegantEmojiPickerViewController: UIViewController {
         searchController!.searchResultsUpdater = self
         searchController!.delegate = self
         searchController!.obscuresBackgroundDuringPresentation = false
-        searchController!.searchBar.placeholder = localization.searchFieldPlaceholder
+        searchController!.searchBar.placeholder = EmojiPickerLocalization.searchPlaceholder
         searchController!.hidesNavigationBarDuringPresentation = false
         
         self.navigationItem.searchController = searchController
@@ -208,7 +205,7 @@ extension ElegantEmojiPickerViewController: UISearchResultsUpdating, UISearchCon
         
         if !isSearching && count > 0 {
             isSearching = true
-            self.navigationItem.title = localization.searchResultsTitle
+            self.navigationItem.title = EmojiPickerLocalization.searchResultsTitle
             delegate?.emojiPickerDidStartSearching(ElegantEmojiPicker.shared)
             HideBuiltInToolbar()
         }
@@ -225,7 +222,7 @@ extension ElegantEmojiPickerViewController: UISearchResultsUpdating, UISearchCon
     
     public func willPresentSearchController(_ searchController: UISearchController) {
         if !isSearching {
-            self.navigationItem.title = localization.searchResultsTitle
+            self.navigationItem.title = EmojiPickerLocalization.searchResultsTitle
         }
         delegate?.emojiPickerDidStartSearching(ElegantEmojiPicker.shared)
     }
@@ -250,7 +247,7 @@ extension ElegantEmojiPickerViewController: UICollectionViewDelegate, UICollecti
         let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! CollectionViewSectionHeader
         
         let categoryTitle = emojiSections[indexPath.section].title
-        sectionHeader.label.text = searchResults == nil ? categoryTitle : searchResults!.count == 0 ? localization.searchResultsEmptyTitle : localization.searchResultsTitle
+        sectionHeader.label.text = searchResults == nil ? categoryTitle : searchResults!.count == 0 ? EmojiPickerLocalization.searchResultsEmpty : EmojiPickerLocalization.searchResultsTitle
         return sectionHeader
     }
     

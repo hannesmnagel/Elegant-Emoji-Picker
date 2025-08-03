@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "ElegantEmojiPicker",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v13),
         .macCatalyst(.v13)
@@ -21,7 +22,12 @@ let package = Package(
             path: "Sources",
             resources: [
                 .process("Resources/Emoji Unicode 16.0.json"),
-                .process("Resources/Icons.xcassets")
+                .process("Resources/Icons.xcassets"),
+                .process("Resources/en.lproj"),
+                .process("Resources/de.lproj"),
+                .process("Resources/fr.lproj"),
+                .process("Resources/es.lproj"),
+                .process("Resources/it.lproj")
             ])
     ]
 )

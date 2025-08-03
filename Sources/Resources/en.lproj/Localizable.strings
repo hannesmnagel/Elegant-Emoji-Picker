@@ -1,0 +1,17 @@
+/* Elegant Emoji Picker Localizable Strings - English */
+
+/* Search */
+"search_placeholder" = "Search";
+"search_results_title" = "Search results";
+"search_results_empty" = "No emoji found";
+
+/* Emoji Categories */
+"category_smileys_emotion" = "Smileys & Emotion";
+"category_people_body" = "People & Body";
+"category_animals_nature" = "Animals & Nature";
+"category_food_drink" = "Food & Drink";
+"category_travel_places" = "Travel & Places";
+"category_activities" = "Activities";
+"category_objects" = "Objects";
+"category_symbols" = "Symbols";
+"category_flags" = "Flags";
