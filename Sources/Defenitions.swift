@@ -171,58 +171,6 @@ public enum EmojiCategory: String, CaseIterable, Decodable {
     }
 }
 
-/// Struct storing settings for the ElegantEmojiPicker.
-public struct ElegantConfiguration {
-    public var showSearch: Bool
-    public var showRandom: Bool
-    public var showReset: Bool
-    public var showClose: Bool
-    public var showToolbar: Bool
-    
-    public var supportsPreview: Bool
-    
-    public var categories: [EmojiCategory]
-    
-    public var supportsSkinTones: Bool
-    public var persistSkinTones: Bool
-    public var defaultSkinTone: EmojiSkinTone? = nil
-    
-    /// Create a new configuration object
-    /// - Parameters:
-    ///   - showSearch: Show or hide search bar
-    ///   - showRandom: Show or hide "Random" button
-    ///   - showReset: Show or hide "Reset" button
-    ///   - showClose: Show or hide "Close" button
-    ///   - showToolbar: Show or hide built-in categories toolbar
-    ///   - supportsPreview: Allow or disallow previewing emojis with long-press
-    ///   - categories: Which default emoji categories to offer users
-    ///   - supportsSkinTones: Allow or disallow selecting emojis skin tone with long-press
-    ///   - persistSkinTones: Should save user's skin tone selection for each emoji between sessions. Default is true.
-    ///   - defaultSkinTone: Optional skin tone to use as default. Default value is `nil`, meaning standard yellow emojis will be used.
-    public init(
-        showSearch: Bool = true,
-        showRandom: Bool = false,
-        showReset: Bool = false,
-        showClose: Bool = false,
-        showToolbar: Bool = true,
-        supportsPreview: Bool = true,
-        categories: [EmojiCategory] = [.SmileysAndEmotion, .PeopleAndBody, .AnimalsAndNature, .FoodAndDrink, .TravelAndPlaces, .Activities, .Objects, .Symbols, .Flags],
-        supportsSkinTones: Bool = true,
-        persistSkinTones: Bool = true,
-        defaultSkinTone: EmojiSkinTone? = nil) {
-            
-        self.showSearch = showSearch
-        self.showRandom = showRandom
-        self.showReset = showReset
-        self.showClose = showClose
-        self.showToolbar = showToolbar
-        self.supportsPreview = supportsPreview
-        self.categories = categories.sorted(by: { $0.index < $1.index })
-        self.supportsSkinTones = supportsSkinTones
-        self.persistSkinTones = persistSkinTones
-        self.defaultSkinTone = defaultSkinTone
-    }
-}
 
 /// Struct storing texts for all labels of ElegantEmojiPicker
 public struct ElegantLocalization {

@@ -80,13 +80,12 @@ public protocol ElegantEmojiPickerDelegate: AnyObject {
     
     /// Asks the delegate for an array of emojis to offer users, organized by sections.
     ///
-    /// Use this method if you are unsatisfied with the provided emojis and want to supply your own. You are welcome, but, also, fuck you.
+    /// Use this method if you are unsatisfied with the provided emojis and want to supply your own.
     /// - Parameters:
     ///   - picker: Emoji picker view asking the delegate.
-    ///   - withConfiguration: Emoji picker configuration used to setup this emoji picker.
     ///   - withLocalization: Localization used to setup emoji picker.
     /// - Returns: Return an array of Emoji Sections that you would like the emoji picker to offer users.
-    func emojiPicker (_ picker: ElegantEmojiPicker, loadEmojiSections withConfiguration: ElegantConfiguration, _ withLocalization: ElegantLocalization) -> [EmojiSection]
+    func emojiPicker (_ picker: ElegantEmojiPicker, loadEmojiSections withLocalization: ElegantLocalization) -> [EmojiSection]
 }
 
 extension ElegantEmojiPickerDelegate {
@@ -109,8 +108,8 @@ extension ElegantEmojiPickerDelegate {
     
     public func emojiPickerShouldDismissAfterSelection (_ picker: ElegantEmojiPicker) -> Bool { return true }
     
-    public func emojiPicker (_ picker: ElegantEmojiPicker, loadEmojiSections withConfiguration: ElegantConfiguration, _ withLocalization: ElegantLocalization) -> [EmojiSection] {
-        return ElegantEmojiPicker.getDefaultEmojiSections(config: withConfiguration, localization: withLocalization)
+    public func emojiPicker (_ picker: ElegantEmojiPicker, loadEmojiSections withLocalization: ElegantLocalization) -> [EmojiSection] {
+        return ElegantEmojiPicker.getDefaultEmojiSections(localization: withLocalization)
     }
     
 }

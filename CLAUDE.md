@@ -7,12 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Elegant Emoji Picker is a Swift Package for iOS/iPadOS/MacCatalyst that provides a configurable emoji picker UIKit component. The library supports Unicode 16.0 emojis, skin tone variations, search functionality, and various customization options.
 
 **Key Features:**
-- Emoji picker view controller with delegate pattern
-- Search functionality with customizable search algorithms
+- Emoji picker navigation controller with delegate pattern
+- Native iOS search functionality with UISearchController
 - Skin tone support (one per emoji, not two-tone combinations)
 - Categories toolbar with sections
 - Long press preview functionality
-- Configurable UI components (search, random button, reset button, etc.)
+- Dynamic navigation title showing current category
 - Localization support
 - Latest Unicode 16.0 emoji support
 
@@ -21,11 +21,11 @@ Elegant Emoji Picker is a Swift Package for iOS/iPadOS/MacCatalyst that provides
 ### Core Components
 
 **Main Classes:**
-- `ElegantEmojiPicker`: Main UIViewController that presents the emoji picker interface
+- `ElegantEmojiPicker`: Main UINavigationController that presents the emoji picker interface
+- `ElegantEmojiPickerViewController`: Internal view controller handling the emoji grid and interactions
 - `ElegantEmojiPickerDelegate`: Protocol for handling emoji selection and customization
 - `Emoji`: Data structure representing individual emojis with metadata
 - `EmojiSection`: Groups of emojis organized by category
-- `ElegantConfiguration`: Configuration options for the picker behavior
 - `ElegantLocalization`: Localization strings for UI elements
 
 **UI Elements (Sources/Elements/):**
@@ -43,10 +43,12 @@ Elegant Emoji Picker is a Swift Package for iOS/iPadOS/MacCatalyst that provides
 
 ### Data Flow
 
-1. `ElegantEmojiPicker` loads emoji data from `Emoji Unicode 16.0.json`
-2. Delegate methods allow customization of emoji sections and search behavior
-3. User interactions (selection, search, preview) are communicated through delegate callbacks
-4. Configuration and localization objects control UI behavior and text
+1. `ElegantEmojiPicker` (UINavigationController) creates and manages `ElegantEmojiPickerViewController`
+2. Internal view controller loads emoji data from `Emoji Unicode 16.0.json`
+3. Navigation title dynamically updates to show current emoji category
+4. Delegate methods allow customization of emoji sections and search behavior
+5. User interactions (selection, search, preview) are communicated through delegate callbacks
+6. Localization objects control UI text
 
 ## Development Commands
 
@@ -85,10 +87,11 @@ The library uses a comprehensive delegate pattern with optional methods:
 - Required: `emojiPicker(_:didSelectEmoji:)` for handling selection
 - Optional: Custom emoji loading, search algorithms, preview handling, UI state changes
 
-### Configuration System
-- `ElegantConfiguration`: Controls which UI elements are shown/hidden, default behaviors
+### Simplified Architecture
+- No configuration complexity - sensible defaults with search, categories, and skin tones enabled
 - `ElegantLocalization`: Provides custom text for all UI labels
 - Emoji sections can be completely customized through delegate methods
+- Navigation controller automatically handles cancel button and search bar
 
 ### UI Architecture
 - Collection view-based layout with flow layout

@@ -11,7 +11,7 @@ import UIKit
 class SectionsToolbar: UIView {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    weak var emojiPicker: ElegantEmojiPicker?
+    weak var emojiPicker: ElegantEmojiPickerViewController?
     let padding = 8.0
     
     let blur = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
@@ -21,7 +21,7 @@ class SectionsToolbar: UIView {
     
     var categoryButtons = [SectionButton]()
     
-    init (sections: [EmojiSection], emojiPicker: ElegantEmojiPicker) {
+    init (sections: [EmojiSection], emojiPicker: ElegantEmojiPickerViewController) {
         self.emojiPicker = emojiPicker
         super.init(frame: .zero)
         
@@ -70,7 +70,7 @@ class SectionsToolbar: UIView {
     func UpdateCorrectSelection (animated: Bool = true) {
         guard let emojiPicker = emojiPicker else { return }
 
-        if !emojiPicker.isSearching { self.alpha = emojiPicker.config.categories.count <= 1 ? 0 : 1 }
+        if !emojiPicker.isSearching { self.alpha = emojiPicker.emojiSections.count <= 1 ? 0 : 1 }
         
         let posX: CGFloat? = categoryButtons.indices.contains(emojiPicker.focusedSection) ? categoryButtons[emojiPicker.focusedSection].frame.origin.x : nil
         let safePos: CGFloat = posX ?? padding
@@ -92,9 +92,9 @@ class SectionsToolbar: UIView {
         let imageView = UIImageView()
         
         let section: Int
-        weak var emojiPicker: ElegantEmojiPicker?
+        weak var emojiPicker: ElegantEmojiPickerViewController?
         
-        init (_ section: Int, icon: UIImage?, emojiPicker: ElegantEmojiPicker) {
+        init (_ section: Int, icon: UIImage?, emojiPicker: ElegantEmojiPickerViewController) {
             self.section = section
             self.emojiPicker = emojiPicker
             super.init(frame: .zero)

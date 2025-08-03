@@ -12,7 +12,7 @@ class EmojiCell: UICollectionViewCell {
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented")}
     
     var emoji: Emoji!
-    weak var emojiPicker: ElegantEmojiPicker?
+    weak var emojiPicker: ElegantEmojiPickerViewController?
     
     let label = UILabel()
     
@@ -28,7 +28,7 @@ class EmojiCell: UICollectionViewCell {
         self.addSubview(label, anchors: LayoutAnchor.fullFrame)
     }
     
-    func Setup(emoji: Emoji, _ emojiPicker: ElegantEmojiPicker) {
+    func Setup(emoji: Emoji, _ emojiPicker: ElegantEmojiPickerViewController) {
         self.emoji = emoji
         self.emojiPicker = emojiPicker
         
@@ -38,7 +38,7 @@ class EmojiCell: UICollectionViewCell {
     @objc func LongPress (_ sender: UILongPressGestureRecognizer) {
         guard let emojiPicker = emojiPicker else { return }
 
-        if !emojiPicker.config.supportsSkinTones || !emoji.supportsSkinTones { return }
+        if !emoji.supportsSkinTones { return }
         
         if sender.state == .began {
             emojiPicker.ShowSkinToneSelector(self)

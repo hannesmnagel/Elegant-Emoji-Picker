@@ -15,7 +15,7 @@ class SkinToneSelector: UIView {
     
     let blur = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
     
-    init (_ standardEmoji: Emoji, _ emojiPicker: ElegantEmojiPicker, fontSize: CGFloat) {
+    init (_ standardEmoji: Emoji, _ emojiPicker: ElegantEmojiPickerViewController, fontSize: CGFloat) {
         super.init(frame: .zero)
         
         self.PopupShadow()
@@ -86,9 +86,9 @@ class SkinToneSelector: UIView {
         let skinTone: EmojiSkinTone?
         let standardEmoji: Emoji
         let skinTonedEmoji: Emoji
-        weak var emojiPicker: ElegantEmojiPicker?
+        weak var emojiPicker: ElegantEmojiPickerViewController?
         
-        init (standardEmoji: Emoji, skinTone: EmojiSkinTone?, emojiPicker: ElegantEmojiPicker, fontSize: CGFloat) {
+        init (standardEmoji: Emoji, skinTone: EmojiSkinTone?, emojiPicker: ElegantEmojiPickerViewController, fontSize: CGFloat) {
             self.skinTone = skinTone
             self.standardEmoji = standardEmoji
             self.skinTonedEmoji = standardEmoji.duplicate(skinTone)
@@ -109,7 +109,7 @@ class SkinToneSelector: UIView {
 
             emojiPicker.didSelectEmoji(skinTonedEmoji)
             
-            emojiPicker.PersistSkinTone(originalEmoji: standardEmoji, skinTone: skinTone)
+            ElegantEmojiPicker.PersistSkinTone(originalEmoji: standardEmoji, skinTone: skinTone)
         }
     }
 }

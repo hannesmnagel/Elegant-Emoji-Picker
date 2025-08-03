@@ -61,8 +61,7 @@ class ViewController: UIViewController {
     
     @objc func TappedEmojiSelection () {
         let picker = ElegantEmojiPicker(delegate: self, sourceView: emojiSelectionButton)
-        let navController = UINavigationController(rootViewController: picker)
-        self.present(navController, animated: true)
+        self.present(picker, animated: true)
     }
 }
 
