@@ -128,7 +128,7 @@ internal class ElegantEmojiPickerViewController: UIViewController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        collectionLayout.headerReferenceSize = CGSize.zero // Remove headers since we use navigation title
+        collectionLayout.headerReferenceSize = CGSize(width: collectionView.frame.width, height: 50)
         fadeContainer.layer.mask?.frame = fadeContainer.bounds
     }
     
@@ -247,8 +247,11 @@ extension ElegantEmojiPickerViewController: UISearchResultsUpdating, UISearchCon
 extension ElegantEmojiPickerViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        // Return empty header since we use navigation title
-        return collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath)
+        let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "SectionHeader", for: indexPath) as! CollectionViewSectionHeader
+        
+        let categoryTitle = emojiSections[indexPath.section].title
+        sectionHeader.label.text = searchResults == nil ? categoryTitle : searchResults!.count == 0 ? localization.searchResultsEmptyTitle : localization.searchResultsTitle
+        return sectionHeader
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
